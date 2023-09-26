@@ -1,10 +1,22 @@
 function fetchUser() {
   showSpinner();
   fetch("https://randomuser.me/api")
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Request Failed");
+      }
+
+      return res.json();
+    })
     .then((data) => {
       hidepinner();
       displayUser(data.results[0]);
+    })
+    .catch((error) => {
+      hidepinner();
+      document.querySelector("#user").innerHTML = `
+      <p class="text-xl text-center text-red-500 mb-5">${error}</p>
+      `;
     });
 }
 
@@ -44,12 +56,12 @@ function displayUser(user) {
 }
 
 function showSpinner() {
-  document.querySelector('.spinner').style.display = 'block';
+  document.querySelector(".spinner").style.display = "block";
 }
 function hidepinner() {
-  document.querySelector('.spinner').style.display = 'none';
+  document.querySelector(".spinner").style.display = "none";
 }
 
-document.querySelector('#generate').addEventListener('click', fetchUser);
+document.querySelector("#generate").addEventListener("click", fetchUser);
 
 fetchUser();
